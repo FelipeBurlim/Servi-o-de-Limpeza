@@ -1,3 +1,6 @@
+#duvida: fazer as funçoes das opçoes dos submenus universais ou específicas
+
+#faxineiros -eu
 def submenu_faxineiros():
     print("Submenu de faxineiros:")
     print("1. Listar todos faxineiros")
@@ -9,8 +12,31 @@ def submenu_faxineiros():
     faxineiros(opção)
 
 def faxineiros(op):
-    #igualmain
+    if op==1:
+        listartd_f()
+    elif op==2:
+        listar_f()
+    elif op==3:
+        incluir_f()
+    elif op==4:
+        alterar_f()
+    elif op==5:
+        excluir_f()
+    else:
+        print("Digite uma opção válida")
 
+def listartd_f():
+
+def listar_f():
+
+def incluir_f():
+
+def alterar_f():
+
+def excluir_f():
+
+
+#cliente -moita
 def submenu_clientes():
     print("Submenu de clientes:")
     print("1. Listar todos clientes")
@@ -24,6 +50,7 @@ def submenu_clientes():
 def clientes(op):
     #igualmain
 
+#serviços -moita
 def submenu_serviços():
     print("Submenu de serviços:")
     print("1. Listar todos serviços")
@@ -37,7 +64,9 @@ def submenu_serviços():
 def serviços(op):
     #igualmain
 
+#relatorios - eu
 
+#main/menu
 def menu():
     print("Menu Principal:")
     print("1. Submenu de Faxineiros")
