@@ -49,20 +49,20 @@ def faxineiros(op):
         excluir_f(FaxineirosDic,cpf)
     else:
         print("Digite uma opção válida")
+    grava_dados(FaxineirosDic,"./faxineiros.txt")
 
 def listartd_f(dic):
     print("Faxineiros:")
     for i in dic:
-        print(f"\t {dic[i][0]}:")
-        for j in range(1,len(dic[i])):
-            print(f"\t\t {dic[i][j]}")
+        print("Cpf:",i)
+        listar_f(dic,i)
         print()
         
 def listar_f(dic,cpf):
+    dados=['Nome:','Sexo:','RG:','Data de nascimento:','Telefones:']
     if cpf in dic:
-        print(dic[cpf][0],":")
-        for i in range(1,len(dic[cpf])):
-            print(f"\t {dic[cpf][i]}")
+        for i in range(len(dic[cpf])):
+            print(f"\t {dados[i]} {dic[cpf][i]}")
     else:
         print("Cpf inválido: faxineiro inexistente ou cpf incorreto.")
     
@@ -158,13 +158,16 @@ def clientes():
     elif op == 5:
         cpf = input(" Inisira o CPF do cliente que deseja excluir : ")
         excl_cliente(cpf,clientes)
+    else:
+        print("Digite uma opção válida.")
+    grava_dados(clientes, "./clientes.txt")
         
 def listar_clientes(ClientesDic):
     for cpf, info in ClientesDic.items():
         print(f"{cpf}")
         for j in info:
             print(j)
-        print("----------------------------------------------------------")
+        print()
 
 def listar_1cliente(cpf,clientes):
     ClientesDic= clientes
@@ -187,8 +190,7 @@ def add_cliente(cpf,dicio):
         cidade=input("Insira sua cidade : ")
         email=input("Insira seu e-mail : ")
         tel=input("Insira seu telefone : ")
-        ClientesDic[cpf]=[nome,dn,end,cidade,email,tel]
-        grava_dados(ClientesDic, "./clientes.txt")
+        ClientesDic[cpf]=[nome,dn,end,cep,cidade,email,tel]
 
 def alterar_cliente(cpf,dicio):
     ClientesDic= dicio
@@ -202,7 +204,6 @@ def alterar_cliente(cpf,dicio):
         email=input("Insira seu e-mail : ")
         tel=input("Insira seu telefone : ")
         ClientesDic[cpf]=[nome,dn,end,cep,cidade,email,tel]
-        grava_dados(ClientesDic, "./clientes.txt")
         print("Alteração concluida!")
         
     else:
@@ -212,8 +213,6 @@ def excl_cliente(cpf,dicio):
     ClientesDic= dicio
     if cpf in ClientesDic:
         del ClientesDic[cpf]
-        grava_dados(ClientesDic, "./clientes.txt")
-        print(ClientesDic)
         print("Remoção concluida com sucesso!")
     else:
         print("CPF não registrado!")  
@@ -226,8 +225,104 @@ def submenu_serviços():
     print("3. Incluir serviço")
     print("4. Alterar serviços")
     print("5. Excluir serviço")
-    opção=input()
+    print("Escolha uma ação:")
+    opção=int(input())
     serviços(opção)
+
+def carregar_dados_servico(nome_arq):
+    dicio_servicos = {}
+    if existe_arq(nome_arq):
+        arq=open(nome_arq, "r")
+        for linha in arq:
+            linha = linha.replace("\n", " ")
+            linha = linha.split(";")
+            dicio_servicos[linha[0],linha[1],linha[2]] = []
+            linha[3] = linha[3].strip()
+            dicio_servicos[linha[0],linha[1],linha[2]].append(linha[3])
+        arq.close()
+        return dicio_servicos
+    else:
+        print("Arquivo não encontrado! ")
+
+def grava_dados_sevico(dicio,nome_arq):
+    arq = open(nome_arq, "w")
+    for chave in dicio:
+        arq.write(f"{chave[0]};{chave[1]};{chave[2]};{dicio[chave][0]}\n")
+    arq.close()
+
+def listar_servicos(servicos):
+    for chave, valor in servicos.items():
+        print(f"{chave[0]} - {chave[1]} - {chave[2]}: {valor[0]}")
+        print()
+
+def listar_1servico(servicos):
+    cpffax = input("Insira o cpf do prestador de serviço: ")
+    cpfcliente = input("Insira o cpf do cliente: ")
+    data= input("Insira a data do serviço (dd/mm/aaaa): ")
+    chave = (cpffax, cpfcliente, data)
+    if chave in servicos:
+        print(f"Serviço encontrado: {chave[0]} - {chave[1]} - {chave[2]}: {servicos[chave][0]}")
+    else:
+        print("Serviço não encontrado.")
+
+def incluir_servico(servicos):
+    cpffax = input("Insira o cpf do prestador de serviço: ")
+    cpfcliente = input("Insira o cpf do cliente: ")
+    data = input("Insira a data do serviço (dd/mm/aaaa): ")
+    preço= input("Insira a preço do serviço: ")
+    chave = (cpffax, cpfcliente, data)
+    if chave not in servicos:
+        servicos[chave] = [preço]
+        print("Serviço incluído com sucesso!")
+    else:
+        print("Serviço já existe.")
+
+def alterar_servico(servicos):
+    cpffax = input("Insira o cpf do prestador de serviço: ")
+    cpfcliente = input("Insira o cpf do cliente: ")
+    data = input("Insira a data do serviço (dd/mm/aaaa): ")
+    chave = (cpffax, cpfcliente, data)
+    if chave in servicos:
+        novo_preco = input("Insira o novo preço do serviço: ")
+        servicos[chave] = [novo_preco]
+        print("Serviço alterado com sucesso!")
+    else:
+        print("Serviço não encontrado.")
+
+def excluir_servico(servicos):
+    cpffax = input("Insira o cpf do prestador de serviço: ")
+    cpfcliente = input("Insira o cpf do cliente: ")
+    data = input("Insira a data do serviço (dd/mm/aaaa): ")
+    chave = (cpffax, cpfcliente, data)
+    if chave in servicos:
+        del servicos[chave]
+        print("Serviço excluído com sucesso!")
+    else:
+        print("Serviço não encontrado.")
+
+def serviços():
+    op=submenu_serviços()
+    nome_arq = "./servicos.txt"
+    servicos = carregar_dados_servico(nome_arq) 
+    if op == 1:
+        print("Listando todos os serviços...")
+        listar_servicos(servicos)
+    elif op == 2:
+        print("Listando um serviço específico...")
+        listar_1servico(servicos)
+    elif op == 3:
+        print("Incluindo um novo serviço...")
+        incluir_servico(servicos)
+    elif op == 4:
+        print("Alterando serviços...")
+        alterar_servico(servicos)
+    elif op == 5:
+        print("Excluindo um serviço...")
+        excluir_servico(servicos)
+    else:
+        print("Opção inválida! Por favor, escolha uma opção válida.")
+    grava_dados_sevico(servicos, "./servicos.txt")
+
 
 def serviços(op):
     print()
@@ -235,6 +330,14 @@ def serviços(op):
 #relatorios - eu
 
 #main/menu
+def grava_dados(dicio,nome_arq):
+    arq = open(nome_arq, "w")
+    for cpf in dicio:
+        arq.write(cpf + ";")
+        for i in range(len(dicio[cpf])):
+            arq.write(dicio[cpf][i]+ ";")
+            arq.write("\n")
+    arq.close()
 
 def existe_arq(nome_arq):
     import os
@@ -242,16 +345,6 @@ def existe_arq(nome_arq):
         return True
     else:
         return False
-    
-
-def grava_dados(dicio,nome_arq):
-    arq = open(nome_arq, "w")
-    for cpf in dicio:
-        arq.write(cpf + ";")
-        for i in range(len(dicio[cpf])):
-            arq.write(dicio[cpf][i]+ ";")
-        arq.write("\n")
-    arq.close()
     
 def menu():
     print("Menu Principal:")
@@ -262,7 +355,6 @@ def menu():
     print("5. Sair")
     opção=int(input())
     return opção
-
 
 def main():
     op=1

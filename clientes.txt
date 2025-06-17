@@ -2,4 +2,4 @@
 43167216563;Pedro Henrique Mourao;18/09/2006;rua dos jardins 22;17723544;Sao Carlos;pedro@email.com;14697650765;
 43435767568;Arthur Tucunduva Nogueira;25/02/2007;rua do taquaral 23;17896544;Marilia;arthut@email.com;14696969696;
 65356656233;Koba Binha Nk;11/05/2001;rua paraguai 65;16534733;Marilia;binha@email.com;14987650098;
-32659695495;Eduardo Corte Silva,01/01/2001; rua dos cortes 52; 17835422;Sao Carlos;cortes@email.com;14987465530;
+32659695495;Eduardo Corte Silva,01/01/2001; rua dos cortes 52; 17835422;Sao Carlos;cortes@email.com;14987465530; 
