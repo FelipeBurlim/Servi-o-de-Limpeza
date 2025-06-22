@@ -240,9 +240,9 @@ def carregar_dados_servico(nome_arq):
             linha[3] = linha[3].strip()
             dicio_servicos[linha[0],linha[1],linha[2]].append(linha[3])
         arq.close()
-        return dicio_servicos
     else:
         print("Arquivo não encontrado! ")
+    return dicio_servicos
 
 def grava_dados_sevico(dicio,nome_arq):
     arq = open(nome_arq, "w")
@@ -300,8 +300,7 @@ def excluir_servico(servicos):
     else:
         print("Serviço não encontrado.")
 
-def serviços():
-    op=submenu_serviços()
+def serviços(op):
     nome_arq = "./servicos.txt"
     servicos = carregar_dados_servico(nome_arq) 
     if op == 1:
@@ -321,13 +320,119 @@ def serviços():
         excluir_servico(servicos)
     else:
         print("Opção inválida! Por favor, escolha uma opção válida.")
-    grava_dados_sevico(servicos, "./servicos.txt")
-
-
-def serviços(op):
-    print()
+    grava_dados_sevico(servicos, "./servicos.txt")  
 
 #relatorios - eu
+
+def submenu_relatorios():
+    print("Submenu de relatórios:")
+    print("1. Relatório de clientes de determinado faxineiro")
+    print("2. Relatório de serviços em determinado dia")
+    print("3. Relatório de determinado faxineiro")
+    print("Escolha uma ação:")
+    opção=int(input())
+    relatorios(opção)
+
+def relatorios(op):
+    if op==1:
+        print("Cpf do faxineiro:")
+        cpf=input()
+        print("Data inicial:") 
+        data_ini=input()
+        print("Data final:") 
+        data_fin=input()
+        relatorio_faxineiro_cliente(cpf,data_ini,data_fin)
+    elif op==2:
+        print("Digite a data:")
+        data=input()
+        relatorio_dia(data)
+    elif op==3:
+        print("Cpf do faxineiro:")
+        cpf=input()
+        relatorio_faxineiro(cpf)
+    else:
+        print("Opção inválida.")
+
+def relatorio_faxineiro(cpf):
+    if existe_arq("./servicos.txt"):
+        arq=open("./servicos.txt","r")
+        for linha in arq:
+            linha = linha.replace("\n", " ")
+            linha = linha.split(";")
+            if linha[0]==cpf:
+                print(f"Cliente: {linha[1]} , data: {linha[2]} e valor: {linha[3]}")
+        arq.close()
+
+def relatorio_dia(data):
+    faxcliente=carregar_faxcliente_data(data)
+    clientes=carregar_dados_clientes("./clientes.txt")
+    faxineiros=carregar_dados_faxineiros('./faxineiros.txt')
+    for i in range(len(faxcliente[0])):
+        print(f"Serviço {i+1}: {faxineiros[faxcliente[0][i]][0]} e {clientes[faxcliente[1][i]][0]}")
+    
+def carregar_faxcliente_data(data):
+    faxcleinte=[[],[]]
+    if existe_arq("./servicos.txt"):
+        arq=open("./servicos.txt", "r")
+        for linha in arq:
+            linha = linha.replace("\n", " ")
+            linha = linha.split(";")
+            if linha[2]==data:
+                faxcleinte[0].append(linha[0])
+                faxcleinte[1].append(linha[1])
+        arq.close()
+    return faxcleinte
+
+def relatorio_faxineiro_cliente(cpf,d_ini,d_fin):
+    nome_arq = "./servicos.txt"
+    clientes=carregar_cpf_cliente(nome_arq,d_ini,d_fin,cpf)
+    if len(clientes)>0:
+        dic_clientes=carregar_dados_clientes("./clientes.txt")
+        for i in clientes:
+            for j in dic_clientes:
+                if i==j:
+                    print("Cliente: ", dic_clientes[j][0])
+                    print("\t email(s): ")
+                    for k in dic_clientes[j][5]:
+                        print("\t\t",k,)
+                    print()
+                    print("\t numero(s): ")
+                    for k in dic_clientes[j][-1]:
+                        print("\t\t",k,)
+                    print()
+    else:
+        print("Nenhum serviço feito por tal faxineiro")
+
+
+def carregar_cpf_cliente(nome_arq,d_ini,d_fin,cpf):
+    clientes=[]
+    if existe_arq(nome_arq):
+        arq=open(nome_arq, "r")
+        d_ini=d_ini.split("/")
+        d_fin=d_fin.split("/")
+        for i in range(len(d_ini)):
+             d_ini[i]=int(d_ini[i])
+             d_fin[i]=int(d_fin[i])
+        for linha in arq:
+            linha = linha.replace("\n", " ")
+            linha = linha.split(";")
+            del linha[-1]
+            if linha[0]==cpf:
+                linha[2]=linha[2].split("/")
+                for i in range(len(linha[2])):
+                    linha[2][i]=int(linha[2][i])
+                if linha[2][2]<d_fin[2] and linha[2][2]>d_ini[2]:
+                    clientes.append(linha[1])
+                elif linha[2][2]<=d_fin[2] and linha[2][2]>=d_ini[2]:
+                    if linha[2][1]<d_fin[1] and linha[2][1]>d_ini[1]:
+                            clientes.append(linha[1])
+                    elif linha[2][1]<=d_fin[1] and linha[2][1]>=d_ini[1]:
+                        if linha[2][0]<=d_fin[0] and linha[2][0]>=d_ini[0]:
+                            clientes.append(linha[1])
+        arq.close() 
+    else:
+        print("Nenhum serviço encontrado!")
+    return clientes
 
 #main/menu
 def grava_dados(dicio,nome_arq):
@@ -368,7 +473,7 @@ def main():
             submenu_serviços()        
         elif op==4:
             print()
-            # submenu_relatórios()
+            submenu_relatorios()
         elif op==5:
             print("Encerrando programa...")
         else:
