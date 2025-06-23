@@ -74,9 +74,9 @@ def incluir_f(dic):
     else:
         nome=input("Nome: ")
         sexo=input("Sexo: ")
-        rg=int(input("RG: "))
+        rg=input("RG: ")
         data=input("Data de nascimento: ")
-        num=int(input("Numero de contato: "))
+        num=input("Numero de contato: ")
         dic[cpf]=[nome,sexo,rg,data,num]
         if cpf in dic:
             print("Faxineiro incluído com sucesso.")
@@ -88,9 +88,9 @@ def alterar_f(dic,cpf):
         print("Insira os dados novos: ")
         nome=input("Nome: ")
         sexo=input("Sexo: ")
-        rg=int(input("RG: "))
+        rg=input("RG: ")
         data=input("Data de nascimento: ")
-        num=int(input("Numero de contato: "))
+        num=input("Numero de contato: ")
         dic[cpf]=[nome,sexo,rg,data,num]
         print("Alteração concluída.")
     else:
@@ -117,8 +117,8 @@ def carregar_dados_clientes(nome_arq):
             dicio_clientes[linha[0]].append(linha[3])
             dicio_clientes[linha[0]].append(linha[4])
             dicio_clientes[linha[0]].append(linha[5])
-            dicio_clientes[linha[0]].append(linha[6])
-            dicio_clientes[linha[0]].append(linha[7])
+            dicio_clientes[linha[0]].append([linha[6]])
+            dicio_clientes[linha[0]].append([linha[7]])
     else:
             print("Arquivo não encontrado! ")
     arq.close()
@@ -149,8 +149,7 @@ def clientes():
         else:
             print("CPF não cadastrado!")
     elif op ==3:
-        print("Cadastrando novo cliente... ")
-        cpf = input(" Inisira seu CPF: ")
+        cpf = input(" Inisira um CPF: ")
         add_cliente(cpf,clientes)
     elif op==4:
         cpf = input(" Inisira o CPF do cliente que deseja alterar os dados : ")
@@ -441,7 +440,7 @@ def grava_dados(dicio,nome_arq):
         arq.write(cpf + ";")
         for i in range(len(dicio[cpf])):
             arq.write(dicio[cpf][i]+ ";")
-            arq.write("\n")
+        arq.write("\n")
     arq.close()
 
 def existe_arq(nome_arq):
